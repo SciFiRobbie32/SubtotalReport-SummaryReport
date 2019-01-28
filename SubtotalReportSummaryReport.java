@@ -1,5 +1,6 @@
 
-/*/*This program is to calculate how many people of what party and gender contributed cash to the cause of saving the barns.
+/*This program is to create two reports: the summary report where it will show the men and women of the different technologie classes and the averages of how they donated.
+ * the subtotal report which prints the student id, gender, major, and donation amount with a break subtotal line in which it shows the major and the total donations. a grand total line at the end shows how many students there are and how much donations there were.
  * Robert Hannah 01/16/2019
  * 
  */
@@ -9,7 +10,6 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-//import java.text.*;
 import java.util.*;
 
 public class SubtotalReportSummaryReport {
@@ -41,7 +41,7 @@ public class SubtotalReportSummaryReport {
 
 	}
 	public static void init() {
-		// Set up input Scanner
+		// Set up input Scanner and the pw's.
 		try {
 		myScanner = new Scanner(new File("IHCCFUN2.DAT"));
 		myScanner.useDelimiter(System.getProperty("line.separator"));
@@ -65,7 +65,9 @@ public class SubtotalReportSummaryReport {
 			}
 		
 		input();
+		//setting hold field for the break line.
 		hMajor = iMajor;
+		//getting the local date, formatting and printing the title line.
 		LocalDate iDate = LocalDate.now();
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 		pwSubtotal.format("%13s%11s%9s%n", "Indian Hills ", " Subtotals ", iDate.format(dtf));
@@ -84,7 +86,6 @@ public class SubtotalReportSummaryReport {
 			iDonate = Double.parseDouble(iString);
 		}	
 		else {
-			System.out.print("Here");
 			//End the loop if there arn't any records by changing "End" to true
 			endPrgm = true;
 			
@@ -92,16 +93,18 @@ public class SubtotalReportSummaryReport {
 	}
 	
 	public static void calcs() {
+		//getting the base male and female donations for the summary.
 		if (iGender.equals("M")) {
 			cMaleDonate += iDonate;
 		}
 		else {
 			cFemaleDonate += iDonate;
 		}
+		//break check.
 		if (iMajor != hMajor) {
 			PrintSubtotal();
 		}
-		
+		//this switch gets the, gender, a counter for the gender, record count, and even the Totals for the break line.
 		switch (iMajor) {
 		case 1:
 			cRecordCount++;
@@ -274,6 +277,7 @@ public class SubtotalReportSummaryReport {
 			break;
 			
 		}
+		//Subtotal Details
 		String oGender, oDonate;
 		if (iGender.equals("M")) {
 			oGender = "Male";
@@ -285,7 +289,7 @@ public class SubtotalReportSummaryReport {
 		oDonate = dfFormater.format(iDonate);
 		pwSubtotal.format("%n%7s%5s%6s%1s%31s%1s%7s%n", iStudent, " ", oGender, " ", oMajor, " ", oDonate);
 		
-		
+		//this "finds" the information for the summary report.
 		if (iMajor == 1 || iMajor == 6 || iMajor == 8 || iMajor == 9 || iMajor == 10) {
 			cInfo += 1;
 			cTotalInfo += iDonate;
@@ -331,9 +335,11 @@ public class SubtotalReportSummaryReport {
 			}
 			
 		}
+		//grand total counter.
 		cTotalDonate += iDonate;
 	}
 	public static void PrintSubtotal() {
+		//Printing/formatting the Break line of the subtotal.
 		String oTotal;
 		DecimalFormat dfFormater = new DecimalFormat("$##,###.00");
 		oTotal = dfFormater.format(cTotal);
@@ -344,10 +350,12 @@ public class SubtotalReportSummaryReport {
 	}
 	
 	public static void PrintSummary() {
+		//formatting variables, finalization math for formatting, and printing.
 		String oAvg, oAvgM, oAvgF, oAvgIF, oAvgIM, oAvgMF, oAvgMM, oAvgTF, oAvgTM, oMenTran, oFemTran, oMenManu, oFemManu, oMenInfo, oFemInfo,
 		oTotalDonate;
 		double cAvg, cAvgIF, cAvgIM, cAvgMF, cAvgMM, cAvgTF, cAvgTM, cAvgF, cAvgM;
 		DecimalFormat dfFormater = new DecimalFormat("$##,###.00");
+		// getting the averages and rounding them.
 		cAvg = cTotalDonate/cOverAll;
 		cAvg = cAvg * 100;
 		cAvg = Math.round(cAvg);
@@ -384,6 +392,7 @@ public class SubtotalReportSummaryReport {
 		cAvgF = cAvgF * 100;
 		cAvgF = Math.round(cAvgF);
 		cAvgF = cAvgF/100;
+		//Formatting the averages, adding the $ and a set decimal place (although the above would have made it to two places already)
 		oAvg  = dfFormater.format(cAvg);
 		oAvgF = dfFormater.format(cAvgF);
 		oAvgM = dfFormater.format(cAvgM);
@@ -392,7 +401,8 @@ public class SubtotalReportSummaryReport {
 		oAvgMF = dfFormater.format(cAvgMF);
 		oAvgMM = dfFormater.format(cAvgMM);
 		oAvgTF = dfFormater.format(cAvgTF);
-		oAvgTM = dfFormater.format(cAvgTM); 
+		oAvgTM = dfFormater.format(cAvgTM);
+		//Printing the Summary report.
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cTotalF, "Females: ", cTotalF, " Average: ", oAvgF);
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cTotalM, "Males: ", cTotalM, " Average: ", oAvgM);
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cMaleInfo, "Male Info: ", cMaleInfo, " Average: ", oAvgIM);
@@ -402,6 +412,7 @@ public class SubtotalReportSummaryReport {
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cMaleTran, "Male Tran: ", cMaleTran, " Average: ", oAvgTM);
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cFemaleTran, "Female Tran: ", cFemaleTran, " Average: ", oAvgTF);
 		pwSummary.format("%n%13s%-2s%15s%-2s%9s%8s%n", "Record Count: ", cOverAll, "OverAll: ", cOverAll, " Average: ", oAvg);
+		//Printing the Subtotals Grand Totals.
 		oTotalDonate = dfFormater.format(cTotalDonate);
 		pwSubtotal.format("%n%18s%-4s%12s%13s%n","Number Of Students: ", cOverAll, " Grand Totals: ", oTotalDonate);
 	}
